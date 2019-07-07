@@ -1,25 +1,70 @@
-<b [class]="textColorClass"> Hello World </b> <br/>
-My name is {{ name }} <br/>
-I am a {{ profession }}. <br/>
-Do not forget to visit me at: {{ website }} <br/>
-And connect with me on: <br/>
-<ul>
-  <li *ngFor="let link of socialLinks; let idx=index;"><a [class]="'red_border'" *ngIf="link.is_active" href="{{link.link}}">{{link.title}}</a> | <button (click)="removeItem(idx)">remove</button></li>
-</ul>
-Current Time: {{ time }} <br/>
-<button (click)="handleClick()">Update++</button>: {{ count }}
-<p>Enter a quote: <input type="text" value="" (keyup)="displayQuote($event)"></p>
-<button type="button" (click)="saveQuote()">Save</button>
-<br/>
-<p>Here's your quote: {{ currentQuote }} </p>
-<p> Quotes you've written previously:
-  <ul>
-    <li *ngFor="let quote of quotes;"> {{quote}} </li>
-  </ul>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1> To-Do Application </h1>
+    </div>
+  </div>
 
-<h1>Two Way Data Binding</h1>
-<input type="text" [(ngModel)]="inputData" value=""> <br>
-<button type="button">React</button>
-<div>
-   Input data: {{ inputData | uppercase }}
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-8">
+        <input type="text" class="form-control" name="task" placeholder="Task" #taskInput>
+      </div>
+
+      <div class="col-xs-4">
+        <button class="btn btn-info" (click)="addTask(taskInput)">Add</button>
+      </div>
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-xs-8">
+        <input type="text" class="form-control" name="filter" placeholder="Filter Keyword(s)" #filterInput>
+      </div>
+
+      <div class="col-xs-4">
+        <button class="btn btn-info" (click)="addFilter(filterInput)">Filter</button>
+      </div>
+\   </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>To-Do List</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <br/>
+          <tr *ngFor="let todo of filteredTasks; let idx=index;">
+            <td *ngIf="!todo.is_cancelled; else cancelledTd">
+              {{ idx+1 }}. {{ todo.title }}
+            </td>
+            <ng-template #cancelledTd>
+              <td><s>{{ idx+1 }}. {{ todo.title }}</s></td>
+            </ng-template>
+            <td>
+              <button class="btn btn-primary btn-xs" (click)="editTask(todo.f_idx)"> Edit </button>
+            </td>
+            <td>
+              <button class="btn-xs btn-warning" (click)="cancelTask(todo.f_idx)"> Cancel </button>
+            </td>
+            <td>
+              <button class="btn btn-danger btn-xs" (click)="deleteTask(todo.f_idx)"> Delete </button>
+            </td>
+          </tr>
+          <br/>
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <button class="btn btn-danger" (click)="clearList()">Clear</button>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
 </div>

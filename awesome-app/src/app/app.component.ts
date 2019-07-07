@@ -1,63 +1,100 @@
 import { Component } from '@angular/core';
 
-interface ISocialLink {
-  link: string;
+
+interface Task {
   title: string;
-  is_active: boolean;
+  is_cancelled: boolean;
+  f_idx: number;
 }
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+ selector: 'app-root',
+ templateUrl: './app.component.html',
+ styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  name = 'Shivam';
-  profession = 'Student';
-  website = 'thealphadollar.github.io';
-  time = new Date();
-  count = 0;
-  socialLinks: ISocialLink[] = [
-    {link: 'https://www.github.com/thealphadollar', title: 'Github', is_active: true},
-    {link: 'https://www.facebook.com/thealphadollar', title: 'Facebook', is_active: true}
+  todoArray: Array<Task> = [
+    {
+      title: 'First task',
+      is_cancelled: false,
+      f_idx: null
+    },
+    {
+      title: 'Second task',
+      is_cancelled: false,
+      f_idx: null
+    },
+    {
+      title: 'Third task',
+      is_cancelled: false,
+      f_idx: null
+    }
   ];
-  textColorClass = 'white green_bg';
-  currentQuote = '';
-  quotes = [];
-  inputData = '';
+  filteredTasks: Array<Task> = [];
+  filterBy = '';
 
   constructor() {
-    setTimeout(() => {
-      this.profession = 'Learner';
-    }, 1000);
-
-    setTimeout(() => {
-      this.textColorClass = 'yellowgreen green_bg';
-    }, 2000);
-
-    setInterval(() => {
-      this.time = new Date();
-    }, 1000);
+    this.filterTasks();
   }
 
-  handleClick() {
-    this.count += 1;
-  }
-
-  removeItem(idx) {
-    this.socialLinks.splice(idx, 1);
-  }
-
-  displayQuote(evnt) {
-    if (evnt.target.value) {
-      this.currentQuote = evnt.target.value;
+  clearList() {
+    let cnfrm = confirm('Are you sure to delete all tasks?');
+    if (cnfrm) {
+      this.todoArray.splice(0);
     }
   }
 
-  saveQuote() {
-    if (this.currentQuote) {
-      this.quotes.push(this.currentQuote);
+  addTask(taskInput) {
+    let val = taskInput.value;
+    taskInput.value = '';
+    this.todoArray.push({
+      title: val,
+      is_cancelled: false,
+      f_idx: null
+    });
+  }
+
+  cancelTask(idx) {
+    this.todoArray[idx].is_cancelled = !this.todoArray[idx].is_cancelled;
+
+  }
+
+  editTask(idx) {
+    let title = this.todoArray[idx].title;
+    let result = prompt('Edit Task Title', title);
+    if (result != null && result != '') {
+      this.todoArray[idx].title = result;
     }
   }
 
+  deleteTask(idx) {
+    let cnfrmd = confirm('Are you sure to delete the task?');
+    if (cnfrmd) {
+      this.todoArray.splice(idx, 1);
+    }
+  }
+
+  filterTasks() {
+    const filtered: Array<Task> = [];
+    for (let idx = 0; idx < this.todoArray.length; idx++) {
+      const task = this.todoArray[idx];
+      if (task.title.includes(this.filterBy)) {
+        filtered.push(
+          {
+            title: task.title,
+            is_cancelled: task.is_cancelled,
+            f_idx: idx
+          }
+        );
+      }
+    }
+
+    this.filteredTasks = filtered;
+  }
+
+  addFilter(filterInput) {
+    const filter: string = filterInput.value;
+    this.filterBy = filter;
+    this.filterTasks();
+  }
 }
