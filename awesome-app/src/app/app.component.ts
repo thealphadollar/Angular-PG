@@ -42,6 +42,7 @@ export class AppComponent {
     if (cnfrm) {
       this.todoArray.splice(0);
     }
+    this.filterTasks();
   }
 
   addTask(taskInput) {
@@ -52,11 +53,12 @@ export class AppComponent {
       is_cancelled: false,
       f_idx: null
     });
+    this.filterTasks();
   }
 
   cancelTask(idx) {
     this.todoArray[idx].is_cancelled = !this.todoArray[idx].is_cancelled;
-
+    this.filterTasks();
   }
 
   editTask(idx) {
@@ -65,6 +67,7 @@ export class AppComponent {
     if (result != null && result != '') {
       this.todoArray[idx].title = result;
     }
+    this.filterTasks();
   }
 
   deleteTask(idx) {
@@ -72,13 +75,14 @@ export class AppComponent {
     if (cnfrmd) {
       this.todoArray.splice(idx, 1);
     }
+    this.filterTasks();
   }
 
   filterTasks() {
     const filtered: Array<Task> = [];
     for (let idx = 0; idx < this.todoArray.length; idx++) {
       const task = this.todoArray[idx];
-      if (task.title.includes(this.filterBy)) {
+      if (task.title.toLowerCase().includes(this.filterBy)) {
         filtered.push(
           {
             title: task.title,
@@ -94,7 +98,13 @@ export class AppComponent {
 
   addFilter(filterInput) {
     const filter: string = filterInput.value;
-    this.filterBy = filter;
+    this.filterBy = filter.toLowerCase();
+    this.filterTasks();
+  }
+
+  clearFilter(filterInput) {
+    filterInput.value = '';
+    this.filterBy = '';
     this.filterTasks();
   }
 }
